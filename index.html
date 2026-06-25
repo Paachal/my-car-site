@@ -3,361 +3,952 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Top 5 Performance Cars · 3D Showcase</title>
+<title>5 Cars Worth Knowing · AUTO.NG</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,300;0,700;0,900;1,900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-* { margin:0; padding:0; box-sizing:border-box; }
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
 
 :root {
-  --bg: #08080C;
-  --surface: #10101A;
-  --surface2: #18182A;
-  --text: #E8E8F2;
-  --muted: #5A5A7A;
-  --red: #E8192C;
-  --blue: #2D8CFF;
-  --orange: #E87A19;
-  --gold: #C9A84C;
+  --cream: #F8F6F2;
+  --cream2: #EFEDE8;
+  --cream3: #E5E2DC;
+  --ink: #1A1A1A;
+  --ink2: #3A3A3A;
+  --muted: #8A8A8A;
+  --white: #FFFFFF;
+  --red: #D42B2B;
+  --gold: #B8922A;
+  --blue: #1A5FBD;
+  --orange: #C45E0A;
+  --silver: #6B7A8D;
 }
 
-html, body {
-  width:100%; height:100%;
-  background: var(--bg);
-  color: var(--text);
-  font-family: 'Barlow', 'Arial Narrow', sans-serif;
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--cream);
+  color: var(--ink);
+  font-family: 'Inter', sans-serif;
+  overflow-x: hidden;
+}
+
+/* ══════════════════════════════════
+   LOADER
+══════════════════════════════════ */
+#loader {
+  position: fixed; inset: 0; z-index: 9999;
+  background: var(--ink);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 24px;
+  transition: opacity 0.8s, transform 0.8s;
+}
+#loader.out { opacity: 0; pointer-events: none; }
+
+.loader-logo {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 48px; font-weight: 900;
+  color: #fff; letter-spacing: -2px;
+}
+.loader-logo span { color: var(--red); }
+
+.loader-bar-wrap {
+  width: 200px; height: 2px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 2px; overflow: hidden;
+}
+.loader-bar {
+  height: 100%; width: 0;
+  background: var(--red);
+  border-radius: 2px;
+  transition: width 0.1s linear;
+}
+.loader-text {
+  font-size: 11px; letter-spacing: 3px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.4);
+}
+
+/* ══════════════════════════════════
+   GLOBAL NAV
+══════════════════════════════════ */
+#nav {
+  position: fixed; top: 0; left: 0; right: 0;
+  z-index: 100;
+  padding: 0 48px;
+  height: 64px;
+  display: flex; align-items: center; justify-content: space-between;
+  transition: background 0.4s, box-shadow 0.4s;
+}
+#nav.scrolled {
+  background: rgba(248,246,242,0.92);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 1px 0 rgba(0,0,0,0.08);
+}
+
+.nav-logo {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 22px; font-weight: 900;
+  letter-spacing: -0.5px; color: var(--ink);
+  text-decoration: none;
+}
+.nav-logo span { color: var(--red); }
+
+.nav-links {
+  display: flex; gap: 32px; list-style: none;
+}
+.nav-links a {
+  font-size: 12px; font-weight: 500;
+  letter-spacing: 2px; text-transform: uppercase;
+  color: var(--ink2); text-decoration: none;
+  opacity: 0.7; transition: opacity 0.2s;
+}
+.nav-links a:hover { opacity: 1; }
+
+.nav-scroll-indicator {
+  width: 40px; height: 2px;
+  background: var(--cream3); border-radius: 2px; overflow: hidden;
+}
+.nav-scroll-fill {
+  height: 100%; width: 0; background: var(--ink);
+  border-radius: 2px; transition: width 0.1s;
+}
+
+/* ══════════════════════════════════
+   HERO SECTION
+══════════════════════════════════ */
+#hero {
+  height: 100vh; min-height: 600px;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  position: relative; overflow: hidden;
+  background: var(--ink);
+}
+
+.hero-bg-canvas {
+  position: absolute; inset: 0;
+}
+
+.hero-content {
+  position: relative; z-index: 2;
+  text-align: center;
+  padding: 0 24px;
+}
+
+.hero-eyebrow {
+  font-size: 11px; letter-spacing: 5px;
+  text-transform: uppercase; color: rgba(255,255,255,0.4);
+  margin-bottom: 20px;
+  opacity: 0; transform: translateY(16px);
+  animation: fadeUp 0.7s 0.5s forwards;
+}
+
+.hero-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: clamp(72px, 14vw, 160px);
+  font-weight: 900; font-style: italic;
+  line-height: 0.88; text-transform: uppercase;
+  color: #fff; letter-spacing: -3px;
+  opacity: 0; transform: translateY(24px);
+  animation: fadeUp 0.7s 0.7s forwards;
+}
+.hero-title .accent { color: var(--red); display: block; }
+
+.hero-sub {
+  margin-top: 28px;
+  font-size: 15px; font-weight: 300;
+  color: rgba(255,255,255,0.5);
+  letter-spacing: 1px;
+  opacity: 0; transform: translateY(16px);
+  animation: fadeUp 0.7s 0.95s forwards;
+}
+
+.hero-scroll-cue {
+  position: absolute; bottom: 40px; left: 50%;
+  transform: translateX(-50%);
+  display: flex; flex-direction: column;
+  align-items: center; gap: 8px;
+  color: rgba(255,255,255,0.3);
+  font-size: 10px; letter-spacing: 3px;
+  text-transform: uppercase;
+  opacity: 0; animation: fadeUp 0.7s 1.4s forwards;
+}
+.scroll-arrow {
+  width: 1px; height: 48px;
+  background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.4));
+  animation: arrowPulse 1.8s ease-in-out infinite;
+}
+@keyframes arrowPulse {
+  0%,100% { opacity: 0.3; transform: scaleY(1); }
+  50% { opacity: 1; transform: scaleY(1.1); }
+}
+
+/* car count strip in hero */
+.hero-count-strip {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  display: flex; border-top: 1px solid rgba(255,255,255,0.08);
+  opacity: 0; animation: fadeUp 0.5s 1.6s forwards;
+}
+.hero-count-item {
+  flex: 1; padding: 16px 0;
+  text-align: center; border-right: 1px solid rgba(255,255,255,0.06);
+  cursor: pointer; transition: background 0.3s;
+}
+.hero-count-item:last-child { border-right: none; }
+.hero-count-item:hover { background: rgba(255,255,255,0.05); }
+.hci-rank { font-size: 10px; color: rgba(255,255,255,0.3); letter-spacing: 2px; }
+.hci-name {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 15px; font-weight: 700;
+  color: rgba(255,255,255,0.8); text-transform: uppercase;
+}
+
+/* ══════════════════════════════════
+   CAR SECTIONS
+══════════════════════════════════ */
+.car-section {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  position: relative;
   overflow: hidden;
 }
 
-/* ─── LOADING SCREEN ─── */
-#loader {
-  position:fixed; inset:0; z-index:100;
-  background: var(--bg);
-  display:flex; flex-direction:column;
-  align-items:center; justify-content:center;
-  gap:20px;
-  transition: opacity 0.6s;
-}
-#loader.hidden { opacity:0; pointer-events:none; }
+/* alternating layout */
+.car-section:nth-child(even) { grid-template-columns: 1fr 1fr; }
+.car-section:nth-child(even) .car-info-panel { order: 2; }
+.car-section:nth-child(even) .car-3d-panel { order: 1; }
 
-.loader-ring {
-  width:60px; height:60px;
-  border:2px solid rgba(255,255,255,0.08);
-  border-top-color: var(--red);
-  border-radius:50%;
-  animation: spin 0.8s linear infinite;
-}
-@keyframes spin { to { transform:rotate(360deg); } }
-
-.loader-label {
-  font-size:11px; letter-spacing:4px;
-  text-transform:uppercase; color:var(--muted);
+/* info panel */
+.car-info-panel {
+  display: flex; flex-direction: column;
+  justify-content: center;
+  padding: 80px 64px;
+  position: relative; z-index: 2;
 }
 
-/* ─── LAYOUT ─── */
-#app {
-  display:grid;
-  grid-template-rows: 70px 1fr 140px;
-  grid-template-columns: 1fr;
-  height:100vh;
-  opacity:0;
-  transition: opacity 0.8s 0.3s;
-}
-#app.visible { opacity:1; }
-
-/* ─── TOP NAV ─── */
-#topbar {
-  display:flex; align-items:center;
-  justify-content:space-between;
-  padding:0 40px;
-  border-bottom:1px solid rgba(255,255,255,0.05);
-  position:relative; z-index:10;
+.section-rank {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 160px; font-weight: 900; font-style: italic;
+  line-height: 1; letter-spacing: -6px;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(0,0,0,0.08);
+  position: absolute; top: 20px; left: 40px;
+  pointer-events: none; user-select: none;
+  transition: -webkit-text-stroke-color 0.4s;
 }
 
-.logo {
-  font-size:13px; font-weight:700;
-  letter-spacing:3px; text-transform:uppercase;
-  color: var(--text);
-}
-.logo span { color:var(--red); }
-
-.nav-counter {
-  font-size:12px; color:var(--muted);
-  letter-spacing:2px;
-  font-variant-numeric: tabular-nums;
+.section-eyebrow {
+  font-size: 10px; letter-spacing: 4px;
+  text-transform: uppercase; color: var(--muted);
+  margin-bottom: 12px;
+  opacity: 0; transform: translateX(-20px);
+  transition: all 0.6s 0.1s;
 }
 
-.budget-badge {
-  font-size:11px; letter-spacing:2px;
-  text-transform:uppercase;
-  color: var(--gold);
-  border:1px solid rgba(201,168,76,0.3);
-  padding:5px 12px; border-radius:20px;
+.section-make {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: clamp(18px, 2.5vw, 26px);
+  font-weight: 300; text-transform: uppercase;
+  letter-spacing: 4px; color: var(--ink2);
+  opacity: 0; transform: translateX(-20px);
+  transition: all 0.6s 0.15s;
 }
 
-/* ─── 3D CANVAS AREA ─── */
-#canvas-wrap {
-  position:relative;
-  overflow:hidden;
+.section-model {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: clamp(56px, 8vw, 96px);
+  font-weight: 900; font-style: italic;
+  line-height: 0.88; text-transform: uppercase;
+  letter-spacing: -2px; color: var(--ink);
+  opacity: 0; transform: translateX(-24px);
+  transition: all 0.6s 0.2s;
+}
+.section-model .model-accent { color: var(--c-accent, var(--red)); }
+
+.section-years {
+  margin-top: 12px;
+  font-size: 13px; color: var(--muted);
+  letter-spacing: 2px;
+  opacity: 0; transform: translateX(-16px);
+  transition: all 0.5s 0.3s;
 }
 
-#three-canvas {
-  width:100%; height:100%;
-  display:block;
+/* divider */
+.info-divider {
+  width: 40px; height: 2px;
+  background: var(--c-accent, var(--red));
+  margin: 32px 0;
+  opacity: 0; transform: scaleX(0); transform-origin: left;
+  transition: all 0.5s 0.35s;
 }
 
-/* Car name overlay */
-#car-overlay {
-  position:absolute;
-  top:0; left:0; bottom:0;
-  width:380px;
-  padding:36px 40px;
-  display:flex; flex-direction:column;
-  justify-content:center;
-  pointer-events:none;
-  background: linear-gradient(90deg, rgba(8,8,12,0.92) 0%, rgba(8,8,12,0.6) 60%, transparent 100%);
+/* spec grid */
+.spec-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 24px 32px;
+  opacity: 0; transform: translateY(16px);
+  transition: all 0.6s 0.4s;
 }
 
-.rank-num {
-  font-size:80px; font-weight:900;
-  line-height:1;
-  color: var(--accent, var(--red));
-  opacity:0.15;
-  margin-bottom:-10px;
-  transition: color 0.4s;
-  font-style:italic;
+.spec-item {}
+.spec-label {
+  font-size: 10px; letter-spacing: 3px;
+  text-transform: uppercase; color: var(--muted);
+  margin-bottom: 4px;
+}
+.spec-value {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 28px; font-weight: 700;
+  color: var(--ink); line-height: 1;
+}
+.spec-value .spec-unit {
+  font-size: 14px; font-weight: 400;
+  color: var(--muted); margin-left: 2px;
 }
 
-.car-make {
-  font-size:13px; letter-spacing:4px;
-  text-transform:uppercase;
-  color: var(--muted);
-  margin-bottom:4px;
+/* power bar */
+.power-bar-wrap {
+  margin-top: 32px;
+  opacity: 0; transform: translateY(12px);
+  transition: all 0.6s 0.5s;
+}
+.power-bar-label {
+  display: flex; justify-content: space-between;
+  font-size: 10px; letter-spacing: 2px;
+  text-transform: uppercase; color: var(--muted);
+  margin-bottom: 8px;
+}
+.power-bar-track {
+  height: 4px; background: var(--cream3);
+  border-radius: 4px; overflow: hidden;
+}
+.power-bar-fill {
+  height: 100%; width: 0;
+  background: var(--c-accent, var(--red));
+  border-radius: 4px;
+  transition: width 1.2s cubic-bezier(0.4,0,0.2,1);
 }
 
-.car-model-name {
-  font-size:52px; font-weight:900;
-  line-height:0.95; text-transform:uppercase;
-  letter-spacing:-1px;
-  color: var(--text);
-  transition: color 0.3s;
+/* highlights */
+.highlights-list {
+  margin-top: 28px; display: flex; flex-direction: column; gap: 10px;
+  opacity: 0; transform: translateY(12px);
+  transition: all 0.6s 0.55s;
 }
-.car-model-name .accent { color:var(--accent, var(--red)); transition:color 0.4s; }
-
-.car-years {
-  font-size:13px; color:var(--muted);
-  letter-spacing:2px; margin-top:8px;
+.highlight-item {
+  display: flex; align-items: flex-start; gap: 10px;
+  font-size: 13px; color: var(--ink2); line-height: 1.5;
 }
-
-/* stat bars */
-.stat-bars {
-  margin-top:28px;
-  display:flex; flex-direction:column; gap:10px;
-}
-.stat-row { display:flex; flex-direction:column; gap:4px; }
-.stat-meta { display:flex; justify-content:space-between; font-size:11px; }
-.stat-name { color:var(--muted); letter-spacing:2px; text-transform:uppercase; }
-.stat-value { color:var(--text); font-weight:600; }
-.stat-track {
-  height:3px; background:rgba(255,255,255,0.07); border-radius:2px; overflow:hidden;
-}
-.stat-fill {
-  height:100%; border-radius:2px;
-  background: var(--accent, var(--red));
-  transition: width 0.8s cubic-bezier(0.4,0,0.2,1), background 0.4s;
-  width:0;
+.hi-dot {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: var(--c-accent, var(--red));
+  flex-shrink: 0; margin-top: 7px;
 }
 
 /* price */
-.price-display {
-  margin-top:24px;
-  display:flex; align-items:baseline; gap:8px;
+.section-price {
+  margin-top: 32px;
+  display: flex; align-items: baseline; gap: 10px;
+  opacity: 0; transform: translateY(12px);
+  transition: all 0.5s 0.6s;
 }
-.price-label { font-size:11px; color:var(--muted); letter-spacing:2px; text-transform:uppercase; }
+.price-label {
+  font-size: 10px; letter-spacing: 3px;
+  text-transform: uppercase; color: var(--muted);
+}
 .price-amount {
-  font-size:22px; font-weight:800;
-  color:var(--accent, var(--red));
-  letter-spacing:1px;
-  transition:color 0.4s;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 32px; font-weight: 700;
+  color: var(--c-accent, var(--red));
 }
+
+/* 3D panel */
+.car-3d-panel {
+  position: relative;
+  background: var(--c-bg, #F0EDE8);
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden;
+  min-height: 500px;
+}
+
+.car-3d-panel::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse at center, rgba(255,255,255,0.7) 0%, transparent 70%);
+  pointer-events: none; z-index: 1;
+}
+
+.canvas-container {
+  width: 100%; height: 100%;
+  position: absolute; inset: 0;
+}
+
+.panel-canvas { width: 100%; height: 100%; display: block; }
+
+/* floating badge */
+.panel-badge {
+  position: absolute; top: 32px; right: 32px; z-index: 10;
+  background: var(--c-accent, var(--red));
+  color: #fff; border-radius: 50%;
+  width: 64px; height: 64px;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  font-family: 'Barlow Condensed', sans-serif;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+  opacity: 0; transform: scale(0.7);
+  transition: all 0.5s 0.7s;
+}
+.badge-no { font-size: 10px; font-weight: 600; letter-spacing: 1px; opacity: 0.8; }
+.badge-rank { font-size: 28px; font-weight: 900; line-height: 1; }
 
 /* drag hint */
-#drag-hint {
-  position:absolute;
-  bottom:24px; right:40px;
-  display:flex; align-items:center; gap:8px;
-  font-size:11px; color:var(--muted);
-  letter-spacing:2px; text-transform:uppercase;
-  opacity:1; transition:opacity 0.5s;
+.drag-hint {
+  position: absolute; bottom: 24px; left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  font-size: 10px; letter-spacing: 3px;
+  text-transform: uppercase; color: var(--muted);
+  display: flex; align-items: center; gap: 8px;
+  opacity: 0; transition: opacity 0.5s 1s;
+  white-space: nowrap;
 }
-#drag-hint.hidden { opacity:0; pointer-events:none; }
-.drag-icon { font-size:18px; animation:wiggle 1.5s ease-in-out infinite; }
-@keyframes wiggle {
-  0%,100% { transform:rotate(-15deg); }
-  50% { transform:rotate(15deg); }
+.drag-hint-icon { font-size: 16px; animation: spin 3s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* section IN state */
+.car-section.in-view .section-eyebrow,
+.car-section.in-view .section-make,
+.car-section.in-view .section-model,
+.car-section.in-view .section-years,
+.car-section.in-view .info-divider,
+.car-section.in-view .spec-grid,
+.car-section.in-view .power-bar-wrap,
+.car-section.in-view .highlights-list,
+.car-section.in-view .section-price,
+.car-section.in-view .panel-badge,
+.car-section.in-view .drag-hint {
+  opacity: 1; transform: none !important;
 }
 
-/* ─── BOTTOM CAR SELECTOR ─── */
-#car-selector {
-  border-top:1px solid rgba(255,255,255,0.05);
-  display:flex; align-items:stretch;
-  overflow-x:auto; scrollbar-width:none;
-}
-#car-selector::-webkit-scrollbar { display:none; }
-
-.car-thumb {
-  flex:1; min-width:140px;
-  display:flex; flex-direction:column;
-  align-items:center; justify-content:center;
-  gap:6px;
-  padding:16px 12px;
-  cursor:pointer;
-  position:relative;
-  border-right:1px solid rgba(255,255,255,0.04);
-  transition: background 0.3s;
-  user-select:none;
-}
-.car-thumb:last-child { border-right:none; }
-.car-thumb:hover { background:rgba(255,255,255,0.03); }
-.car-thumb.active { background:rgba(255,255,255,0.05); }
-
-.car-thumb::after {
-  content:'';
-  position:absolute; top:0; left:0; right:0;
-  height:2px;
-  background:var(--t-accent, transparent);
-  transition: background 0.3s;
-}
-.car-thumb.active::after { background:var(--t-accent); }
-
-.thumb-rank {
-  font-size:10px; font-weight:700;
-  letter-spacing:3px;
-  color:var(--t-accent);
-}
-.thumb-name {
-  font-size:13px; font-weight:700;
-  text-transform:uppercase; letter-spacing:1px;
-  text-align:center; line-height:1.2;
-  color:var(--text);
-}
-.thumb-hp {
-  font-size:11px; color:var(--muted);
-  letter-spacing:1px;
+/* ══════════════════════════════════
+   COMPARISON SECTION
+══════════════════════════════════ */
+#compare {
+  background: var(--ink);
+  padding: 100px 48px;
+  position: relative; overflow: hidden;
 }
 
-/* ─── AMBIENT PARTICLES ─── */
-.particles {
-  position:absolute; inset:0;
-  pointer-events:none; overflow:hidden;
-}
-.particle {
-  position:absolute;
-  width:2px; height:2px;
-  border-radius:50%;
-  background:rgba(255,255,255,0.3);
-  animation: float linear infinite;
-}
-@keyframes float {
-  from { transform:translateY(100vh) translateX(0); opacity:0; }
-  10% { opacity:1; }
-  90% { opacity:0.5; }
-  to { transform:translateY(-10vh) translateX(40px); opacity:0; }
+#compare::before {
+  content: 'COMPARE';
+  position: absolute; top: -20px; left: -10px;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 220px; font-weight: 900; font-style: italic;
+  color: rgba(255,255,255,0.03); white-space: nowrap;
+  pointer-events: none; user-select: none;
 }
 
-/* ─── TRANSITION FLASH ─── */
-#transition-overlay {
-  position:absolute; inset:0;
-  background:var(--bg);
-  opacity:0; pointer-events:none;
-  transition:opacity 0.15s;
-  z-index:5;
+.compare-header {
+  text-align: center; margin-bottom: 64px;
 }
-#transition-overlay.flash { opacity:0.8; }
+.compare-eyebrow {
+  font-size: 10px; letter-spacing: 5px;
+  text-transform: uppercase; color: rgba(255,255,255,0.3);
+  margin-bottom: 12px;
+}
+.compare-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: clamp(40px, 6vw, 72px);
+  font-weight: 900; font-style: italic;
+  color: #fff; letter-spacing: -1px; text-transform: uppercase;
+}
 
-@media (max-width:700px) {
-  #car-overlay { width:100%; padding:20px; background:linear-gradient(180deg,rgba(8,8,12,0.95) 0%, rgba(8,8,12,0.7) 70%, transparent 100%); top:auto; bottom:0; left:0; right:0; height:auto; }
-  .rank-num { font-size:50px; }
-  .car-model-name { font-size:34px; }
-  .stat-bars { display:none; }
-  #topbar { padding:0 20px; }
-  .budget-badge { display:none; }
+.compare-table {
+  width: 100%; max-width: 960px;
+  margin: 0 auto; border-collapse: collapse;
+}
+
+.compare-table th {
+  padding: 16px 20px; text-align: left;
+  font-size: 10px; letter-spacing: 3px;
+  text-transform: uppercase; color: rgba(255,255,255,0.3);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  font-weight: 400;
+}
+
+.compare-table td {
+  padding: 20px 20px;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  font-size: 14px; color: rgba(255,255,255,0.7);
+  vertical-align: middle;
+}
+
+.compare-table tr:hover td { background: rgba(255,255,255,0.03); }
+
+.compare-table .td-car {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 20px; font-weight: 700;
+  text-transform: uppercase; color: #fff;
+}
+.compare-table .td-rank {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 24px; font-weight: 900;
+}
+
+.compare-bar {
+  display: flex; align-items: center; gap: 10px;
+}
+.cbar-track {
+  flex: 1; height: 3px;
+  background: rgba(255,255,255,0.08); border-radius: 2px; overflow: hidden;
+}
+.cbar-fill {
+  height: 100%; border-radius: 2px;
+  transition: width 1s cubic-bezier(0.4,0,0.2,1);
+}
+.cbar-val { font-size: 13px; white-space: nowrap; }
+
+/* ══════════════════════════════════
+   FOOTER
+══════════════════════════════════ */
+#footer {
+  background: var(--ink);
+  border-top: 1px solid rgba(255,255,255,0.06);
+  padding: 40px 48px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.footer-logo {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 28px; font-weight: 900;
+  color: #fff; letter-spacing: -1px;
+}
+.footer-logo span { color: var(--red); }
+.footer-copy { font-size: 12px; color: rgba(255,255,255,0.25); letter-spacing: 1px; }
+
+/* ══════════════════════════════════
+   SECTION BG COLORS (light, per car)
+══════════════════════════════════ */
+#car-5 { --c-accent: #C8302C; --c-bg: #F0EDE8; background: var(--cream); }
+#car-4 { --c-accent: #1A5FBD; --c-bg: #EAF0F8; background: #F4F7FC; }
+#car-3 { --c-accent: #B05800; --c-bg: #F5EEE8; background: #FAF4EF; }
+#car-2 { --c-accent: #C8302C; --c-bg: #F5EEEE; background: var(--cream); }
+#car-1 { --c-accent: #9A7820; --c-bg: #F5F0E5; background: #FAF6ED; }
+
+/* ghost rank number accent */
+#car-5 .section-rank { -webkit-text-stroke-color: rgba(200,48,44,0.06); }
+#car-4 .section-rank { -webkit-text-stroke-color: rgba(26,95,189,0.06); }
+#car-3 .section-rank { -webkit-text-stroke-color: rgba(176,88,0,0.06); }
+#car-2 .section-rank { -webkit-text-stroke-color: rgba(200,48,44,0.06); }
+#car-1 .section-rank { -webkit-text-stroke-color: rgba(154,120,32,0.07); }
+
+/* ══════════════════════════════════
+   ANIMATIONS
+══════════════════════════════════ */
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(20px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+
+/* ══════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════ */
+@media (max-width: 900px) {
+  .car-section {
+    grid-template-columns: 1fr !important;
+    min-height: auto;
+  }
+  .car-section:nth-child(even) .car-info-panel { order: 1; }
+  .car-section:nth-child(even) .car-3d-panel { order: 2; }
+  .car-3d-panel { min-height: 380px; }
+  .car-info-panel { padding: 48px 32px; }
+  #nav { padding: 0 24px; }
+  .nav-links { display: none; }
+  #compare { padding: 60px 24px; }
+  #footer { flex-direction: column; gap: 16px; text-align: center; }
+}
+
+@media (max-width: 500px) {
+  .spec-grid { grid-template-columns: 1fr 1fr; gap: 16px; }
+  .car-info-panel { padding: 36px 24px; }
+  .hero-count-strip { display: none; }
 }
 </style>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,700;0,900;1,900&family=Barlow:wght@300;400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
-<!-- LOADER -->
+<!-- ══ LOADER ══ -->
 <div id="loader">
-  <div class="loader-ring"></div>
-  <div class="loader-label">Loading 3D Scene</div>
+  <div class="loader-logo">AUTO<span>.</span>NG</div>
+  <div class="loader-bar-wrap"><div class="loader-bar" id="loaderBar"></div></div>
+  <div class="loader-text" id="loaderText">Preparing scene</div>
 </div>
 
-<!-- MAIN APP -->
-<div id="app">
+<!-- ══ NAV ══ -->
+<nav id="nav">
+  <a href="#hero" class="nav-logo">AUTO<span>.</span>NG</a>
+  <ul class="nav-links">
+    <li><a href="#car-5">Civic Si</a></li>
+    <li><a href="#car-4">Corolla</a></li>
+    <li><a href="#car-3">Camry V6</a></li>
+    <li><a href="#car-2">Accord V6</a></li>
+    <li><a href="#car-1">Maybach</a></li>
+    <li><a href="#compare">Compare</a></li>
+  </ul>
+  <div class="nav-scroll-indicator"><div class="nav-scroll-fill" id="scrollFill"></div></div>
+</nav>
 
-  <!-- TOP NAV -->
-  <div id="topbar">
-    <div class="logo">AUTO<span>.</span>NG</div>
-    <div class="nav-counter" id="navCounter">01 / 05</div>
-    <div class="budget-badge">₦7M – ₦500M</div>
+<!-- ══ HERO ══ -->
+<section id="hero">
+  <canvas class="hero-bg-canvas" id="heroBg"></canvas>
+  <div class="hero-content">
+    <p class="hero-eyebrow">Nigerian Market · 2024 Edition</p>
+    <h1 class="hero-title">
+      5 Cars<br>Worth<br><span class="accent">Knowing</span>
+    </h1>
+    <p class="hero-sub">From ₦7M sleepers to a ₦500M statement. Rotate each car in 3D.</p>
   </div>
+  <div class="hero-count-strip">
+    <div class="hero-count-item" onclick="document.getElementById('car-5').scrollIntoView({behavior:'smooth'})">
+      <div class="hci-rank">NO. 5</div>
+      <div class="hci-name">Civic Si</div>
+    </div>
+    <div class="hero-count-item" onclick="document.getElementById('car-4').scrollIntoView({behavior:'smooth'})">
+      <div class="hci-rank">NO. 4</div>
+      <div class="hci-name">Corolla '20</div>
+    </div>
+    <div class="hero-count-item" onclick="document.getElementById('car-3').scrollIntoView({behavior:'smooth'})">
+      <div class="hci-rank">NO. 3</div>
+      <div class="hci-name">Camry V6</div>
+    </div>
+    <div class="hero-count-item" onclick="document.getElementById('car-2').scrollIntoView({behavior:'smooth'})">
+      <div class="hci-rank">NO. 2</div>
+      <div class="hci-name">Accord V6</div>
+    </div>
+    <div class="hero-count-item" onclick="document.getElementById('car-1').scrollIntoView({behavior:'smooth'})">
+      <div class="hci-rank">NO. 1</div>
+      <div class="hci-name">Maybach S680</div>
+    </div>
+  </div>
+  <div class="hero-scroll-cue">
+    <span>Scroll</span>
+    <div class="scroll-arrow"></div>
+  </div>
+</section>
 
-  <!-- 3D CANVAS -->
-  <div id="canvas-wrap">
-    <div class="particles" id="particles"></div>
-    <canvas id="three-canvas"></canvas>
-
-    <!-- CAR INFO OVERLAY -->
-    <div id="car-overlay">
-      <div class="rank-num" id="oRank">5</div>
-      <div class="car-make" id="oMake">Honda</div>
-      <div class="car-model-name" id="oModel">Civic <span class="accent" id="oSuffix">Si</span></div>
-      <div class="car-years" id="oYears">2006 – 2011</div>
-
-      <div class="stat-bars">
-        <div class="stat-row">
-          <div class="stat-meta">
-            <span class="stat-name">Power</span>
-            <span class="stat-value" id="sPower">197 HP</span>
-          </div>
-          <div class="stat-track"><div class="stat-fill" id="fillPower"></div></div>
-        </div>
-        <div class="stat-row">
-          <div class="stat-meta">
-            <span class="stat-name">Engine</span>
-            <span class="stat-value" id="sEngine">K20Z3 · 2.0L I4</span>
-          </div>
-          <div class="stat-track"><div class="stat-fill" id="fillEngine"></div></div>
-        </div>
-        <div class="stat-row">
-          <div class="stat-meta">
-            <span class="stat-name">Value Score</span>
-            <span class="stat-value" id="sValue">8.5 / 10</span>
-          </div>
-          <div class="stat-track"><div class="stat-fill" id="fillValue"></div></div>
-        </div>
+<!-- ══ CAR 5: HONDA CIVIC Si ══ -->
+<section class="car-section" id="car-5">
+  <div class="car-info-panel">
+    <div class="section-rank">5</div>
+    <div class="section-eyebrow">Rank 05 · Honda</div>
+    <div class="section-make">Honda</div>
+    <div class="section-model">Civic <span class="model-accent">Si</span></div>
+    <div class="section-years">2006 – 2011</div>
+    <div class="info-divider"></div>
+    <div class="spec-grid">
+      <div class="spec-item">
+        <div class="spec-label">Engine</div>
+        <div class="spec-value">K20Z3</div>
       </div>
-
-      <div class="price-display">
-        <span class="price-label">Market Price</span>
-        <span class="price-amount" id="oPrice">₦7M – ₦10M</span>
+      <div class="spec-item">
+        <div class="spec-label">Displacement</div>
+        <div class="spec-value">2.0<span class="spec-unit">L I4</span></div>
+      </div>
+      <div class="spec-item">
+        <div class="spec-label">Power</div>
+        <div class="spec-value">197<span class="spec-unit">HP</span></div>
+      </div>
+      <div class="spec-item">
+        <div class="spec-label">0 – 100</div>
+        <div class="spec-value">7.1<span class="spec-unit">sec</span></div>
       </div>
     </div>
-
-    <div id="drag-hint">
-      <span class="drag-icon">✦</span>
-      <span>Drag to rotate</span>
+    <div class="power-bar-wrap">
+      <div class="power-bar-label">
+        <span>Power Output</span><span>197 / 650 HP</span>
+      </div>
+      <div class="power-bar-track">
+        <div class="power-bar-fill" data-pct="30"></div>
+      </div>
     </div>
-
-    <div id="transition-overlay"></div>
+    <div class="highlights-list">
+      <div class="highlight-item"><div class="hi-dot"></div><span>Lightweight & naturally high-revving</span></div>
+      <div class="highlight-item"><div class="hi-dot"></div><span>One of the most fun cars money can buy in Nigeria</span></div>
+      <div class="highlight-item"><div class="hi-dot"></div><span>FWD · 6-Speed Manual</span></div>
+    </div>
+    <div class="section-price">
+      <span class="price-label">Market Price</span>
+      <span class="price-amount">₦7M – ₦10M</span>
+    </div>
   </div>
+  <div class="car-3d-panel">
+    <div class="canvas-container">
+      <canvas class="panel-canvas" id="canvas-5"></canvas>
+    </div>
+    <div class="panel-badge">
+      <div class="badge-no">NO</div>
+      <div class="badge-rank">5</div>
+    </div>
+    <div class="drag-hint"><span class="drag-hint-icon">↻</span> Drag to rotate</div>
+  </div>
+</section>
 
-  <!-- CAR SELECTOR -->
-  <div id="car-selector"></div>
-</div>
+<!-- ══ CAR 4: TOYOTA COROLLA 2020 ══ -->
+<section class="car-section" id="car-4">
+  <div class="car-info-panel">
+    <div class="section-rank">4</div>
+    <div class="section-eyebrow">Rank 04 · Toyota</div>
+    <div class="section-make">Toyota</div>
+    <div class="section-model">Corolla <span class="model-accent">'20</span></div>
+    <div class="section-years">2019 – 2022</div>
+    <div class="info-divider"></div>
+    <div class="spec-grid">
+      <div class="spec-item">
+        <div class="spec-label">Engine</div>
+        <div class="spec-value">M20A-FKS</div>
+      </div>
+      <div class="spec-item">
+        <div class="spec-label">Displacement</div>
+        <div class="spec-value">2.0<span class="spec-unit">L I4</span></div>
+      </div>
+      <div class="spec-item">
+        <div class="spec-label">Power</div>
+        <div class="spec-value">169<span class="spec-unit">HP</span></div>
+      </div>
+      <div class="spec-item">
+        <div class="spec-label">0 – 100</div>
+        <div class="spec-value">8.4<span class="spec-unit">sec</span></div>
+      </div>
+    </div>
+    <div class="power-bar-wrap">
+      <div class="power-bar-label">
+        <span>Power Output</span><span>169 / 650 HP</span>
+      </div>
+      <div class="power-bar-track">
+        <div class="power-bar-fill" data-pct="26"></div>
+      </div>
+    </div>
+    <div class="highlights-list">
+      <div class="highlight-item"><div class="hi-dot"></div><span>Ultra-reliable Japanese engineering</span></div>
+      <div class="highlight-item"><div class="hi-dot"></div><span>Sharp, modern interior with Toyota Safety Sense</span></div>
+      <div class="highlight-item"><div class="hi-dot"></div><span>FWD · CVT / 6-Speed Manual</span></div>
+    </div>
+    <div class="section-price">
+      <span class="price-label">Market Price</span>
+      <span class="price-amount">₦8M – ₦12M</span>
+    </div>
+  </div>
+  <div class="car-3d-panel">
+    <div class="canvas-container">
+      <canvas class="panel-canvas" id="canvas-4"></canvas>
+    </div>
+    <div class="panel-badge">
+      <div class="badge-no">NO</div>
+      <div class="badge-rank">4</div>
+    </div>
+    <div class="drag-hint"><span class="drag-hint-icon">↻</span> Drag to rotate</div>
+  </div>
+</section>
 
-<!-- THREE.JS via ESM -->
+<!-- ══ CAR 3: TOYOTA CAMRY V6 ══ -->
+<section class="car-section" id="car-3">
+  <div class="car-info-panel">
+    <div class="section-rank">3</div>
+    <div class="section-eyebrow">Rank 03 · Toyota</div>
+    <div class="section-make">Toyota</div>
+    <div class="section-model">Camry <span class="model-accent">V6</span></div>
+    <div class="section-years">2007 – 2011</div>
+    <div class="info-divider"></div>
+    <div class="spec-grid">
+      <div class="spec-item">
+        <div class="spec-label">Engine</div>
+        <div class="spec-value">2GR-FE</div>
+      </div>
+      <div class="spec-item">
+        <div class="spec-label">Displacement</div>
+        <div class="spec-value">3.5<span class="spec-unit">L V6</span></div>
+      </div>
+      <div class="spec-item">
+        <div class="spec-label">Power</div>
+        <div class="spec-value">268<span class="spec-unit">HP</span></div>
+      </div>
+      <div class="spec-item">
+        <div class="spec-label">0 – 100</div>
+        <div class="spec-value">6.3<span class="spec-unit">sec</span></div>
+      </div>
+    </div>
+    <div class="power-bar-wrap">
+      <div class="power-bar-label">
+        <span>Power Output</span><span>268 / 650 HP</span>
+      </div>
+      <div class="power-bar-track">
+        <div class="power-bar-fill" data-pct="41"></div>
+      </div>
+    </div>
+    <div class="highlights-list">
+      <div class="highlight-item"><div class="hi-dot"></div><span>Most people don't even know the V6 exists</span></div>
+      <div class="highlight-item"><div class="hi-dot"></div><span>Fast, reliable and effortless to live with daily</span></div>
+      <div class="highlight-item"><div class="hi-dot"></div><span>FWD · 6-Speed Automatic</span></div>
+    </div>
+    <div class="section-price">
+      <span class="price-label">Market Price</span>
+      <span class="price-amount">₦6M – ₦9M</span>
+    </div>
+  </div>
+  <div class="car-3d-panel">
+    <div class="canvas-container">
+      <canvas class="panel-canvas" id="canvas-3"></canvas>
+    </div>
+    <div class="panel-badge">
+      <div class="badge-no">NO</div>
+      <div class="badge-rank">3</div>
+    </div>
+    <div class="drag-hint"><span class="drag-hint-icon">↻</span> Drag to rotate</div>
+  </div>
+</section>
+
+<!-- ══ CAR 2: HONDA ACCORD V6 ══ -->
+<section class="car-section" id="car-2">
+  <div class="car-info-panel">
+    <div class="section-rank">2</div>
+    <div class="section-eyebrow">Rank 02 · Honda</div>
+    <div class="section-make">Honda</div>
+    <div class="section-model">Accord <span class="model-accent">V6</span></div>
+    <div class="section-years">2008 – 2012</div>
+    <div class="info-divider"></div>
+    <div class="spec-grid">
+      <div class="spec-item">
+        <div class="spec-label">Engine</div>
+        <div class="spec-value">J35</div>
+      </div>
+      <div class="spec-item">
+        <div class="spec-label">Displacement</div>
+        <div class="spec-value">3.5<span class="spec-unit">L V6</span></div>
+      </div>
+      <div class="spec-item">
+        <div class="spec-label">Power</div>
+        <div class="spec-value">271<span class="spec-unit">HP</span></div>
+      </div>
+      <div class="spec-item">
+        <div class="spec-label">0 – 100</div>
+        <div class="spec-value">6.2<span class="spec-unit">sec</span></div>
+      </div>
+    </div>
+    <div class="power-bar-wrap">
+      <div class="power-bar-label">
+        <span>Power Output</span><span>271 / 650 HP</span>
+      </div>
+      <div class="power-bar-track">
+        <div class="power-bar-fill" data-pct="42"></div>
+      </div>
+    </div>
+    <div class="highlights-list">
+      <div class="highlight-item"><div class="hi-dot"></div><span>Looks like a family sedan — moves like something else</span></div>
+      <div class="highlight-item"><div class="hi-dot"></div><span>The ultimate Nigerian sleeper car</span></div>
+      <div class="highlight-item"><div class="hi-dot"></div><span>FWD · 5-Speed Automatic</span></div>
+    </div>
+    <div class="section-price">
+      <span class="price-label">Market Price</span>
+      <span class="price-amount">₦6M – ₦10M</span>
+    </div>
+  </div>
+  <div class="car-3d-panel">
+    <div class="canvas-container">
+      <canvas class="panel-canvas" id="canvas-2"></canvas>
+    </div>
+    <div class="panel-badge">
+      <div class="badge-no">NO</div>
+      <div class="badge-rank">2</div>
+    </div>
+    <div class="drag-hint"><span class="drag-hint-icon">↻</span> Drag to rotate</div>
+  </div>
+</section>
+
+<!-- ══ CAR 1: MERCEDES MAYBACH ══ -->
+<section class="car-section" id="car-1">
+  <div class="car-info-panel">
+    <div class="section-rank">1</div>
+    <div class="section-eyebrow">Rank 01 · Mercedes-Benz</div>
+    <div class="section-make">Mercedes-Benz</div>
+    <div class="section-model">Maybach <span class="model-accent">S680</span></div>
+    <div class="section-years">2021 – 2023</div>
+    <div class="info-divider"></div>
+    <div class="spec-grid">
+      <div class="spec-item">
+        <div class="spec-label">Engine</div>
+        <div class="spec-value">M279</div>
+      </div>
+      <div class="spec-item">
+        <div class="spec-label">Displacement</div>
+        <div class="spec-value">6.0<span class="spec-unit">L V12</span></div>
+      </div>
+      <div class="spec-item">
+        <div class="spec-label">Power</div>
+        <div class="spec-value">621<span class="spec-unit">HP</span></div>
+      </div>
+      <div class="spec-item">
+        <div class="spec-label">0 – 100</div>
+        <div class="spec-value">4.5<span class="spec-unit">sec</span></div>
+      </div>
+    </div>
+    <div class="power-bar-wrap">
+      <div class="power-bar-label">
+        <span>Power Output</span><span>621 / 650 HP</span>
+      </div>
+      <div class="power-bar-track">
+        <div class="power-bar-fill" data-pct="95"></div>
+      </div>
+    </div>
+    <div class="highlights-list">
+      <div class="highlight-item"><div class="hi-dot"></div><span>Luxury, comfort and savage performance in one</span></div>
+      <div class="highlight-item"><div class="hi-dot"></div><span>Biturbo V12 — the last of its kind</span></div>
+      <div class="highlight-item"><div class="hi-dot"></div><span>RWD · 9-Speed Automatic · Executive Rear Suite</span></div>
+    </div>
+    <div class="section-price">
+      <span class="price-label">Market Price</span>
+      <span class="price-amount">₦350M – ₦500M</span>
+    </div>
+  </div>
+  <div class="car-3d-panel">
+    <div class="canvas-container">
+      <canvas class="panel-canvas" id="canvas-1"></canvas>
+    </div>
+    <div class="panel-badge">
+      <div class="badge-no">NO</div>
+      <div class="badge-rank">1</div>
+    </div>
+    <div class="drag-hint"><span class="drag-hint-icon">↻</span> Drag to rotate</div>
+  </div>
+</section>
+
+<!-- ══ COMPARISON TABLE ══ -->
+<section id="compare">
+  <div class="compare-header">
+    <div class="compare-eyebrow">Head to Head</div>
+    <div class="compare-title">All 5 Cars · Side by Side</div>
+  </div>
+  <table class="compare-table">
+    <thead>
+      <tr>
+        <th>Rank</th>
+        <th>Car</th>
+        <th>Engine</th>
+        <th>Power</th>
+        <th>0–100</th>
+        <th>Market Price</th>
+      </tr>
+    </thead>
+    <tbody id="compareBody"></tbody>
+  </table>
+</section>
+
+<!-- ══ FOOTER ══ -->
+<footer id="footer">
+  <div class="footer-logo">AUTO<span>.</span>NG</div>
+  <div class="footer-copy">Nigerian Auto Market · 2024 Estimates</div>
+</footer>
+
 <script type="importmap">
 {
   "imports": {
@@ -371,489 +962,291 @@ html, body {
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { RGBELoader } from 'three/addons/loaders/RGBELoader.js';
 
-// ─── CAR DATA ───
+// ── CAR CONFIG ──
 const CARS = [
-  {
-    rank:5, make:'Honda', model:'Civic', suffix:'Si',
-    years:'2006 – 2011', power:197, powerMax:650,
-    engine:'K20Z3 · 2.0L I4', enginePct:45,
-    value:8.5, price:'₦7M – ₦10M',
-    accent:'#E8192C', accentRgb:'232,25,44',
-    bodyColor:0x111111, rimColor:0x1a1a1a,
-    glb: './civic.glb',
-  },
-  {
-    rank:4, make:'Toyota', model:'Corolla', suffix:'2020',
-    years:'2019 – 2022', power:169, powerMax:650,
-    engine:'M20A-FKS · 2.0L I4', enginePct:40,
-    value:8.8, price:'₦8M – ₦12M',
-    accent:'#2D8CFF', accentRgb:'45,140,255',
-    bodyColor:0x050a1a, rimColor:0x101828,
-    glb: './corolla.glb',
-  },
-  {
-    rank:3, make:'Toyota', model:'Camry', suffix:'V6',
-    years:'2007 – 2011', power:268, powerMax:650,
-    engine:'2GR-FE · 3.5L V6', enginePct:75,
-    value:9.0, price:'₦6M – ₦9M',
-    accent:'#E87A19', accentRgb:'232,122,25',
-    bodyColor:0x0d0805, rimColor:0x1a1200,
-    glb: './camry.glb',
-  },
-  {
-    rank:2, make:'Honda', model:'Accord', suffix:'V6',
-    years:'2008 – 2012', power:271, powerMax:650,
-    engine:'J35 · 3.5L V6', enginePct:78,
-    value:9.3, price:'₦6M – ₦10M',
-    accent:'#E8192C', accentRgb:'232,25,44',
-    bodyColor:0x180008, rimColor:0x200010,
-    glb: './accord.glb',
-  },
-  {
-    rank:1, make:'Mercedes-Benz', model:'Maybach', suffix:'S680',
-    years:'2021 – 2023', power:621, powerMax:650,
-    engine:'M279 · 6.0L V12 Biturbo', enginePct:98,
-    value:9.9, price:'₦350M – ₦500M',
-    accent:'#C9A84C', accentRgb:'201,168,76',
-    bodyColor:0x080806, rimColor:0x2a2410,
-    glb: './maybach.glb',
-  }
+  { id:'5', glb:'./civic.glb',   accent:'#C8302C', bgLight:'#F8F2F2' },
+  { id:'4', glb:'./corolla.glb', accent:'#1A5FBD', bgLight:'#F0F4FC' },
+  { id:'3', glb:'./camry.glb',   accent:'#B05800', bgLight:'#FAF2EC' },
+  { id:'2', glb:'./accord.glb',  accent:'#C8302C', bgLight:'#FAF0F0' },
+  { id:'1', glb:'./maybach.glb', accent:'#9A7820', bgLight:'#FAF6E8' },
 ];
 
-// ─── SCENE SETUP ───
-const canvas = document.getElementById('three-canvas');
-const wrap = document.getElementById('canvas-wrap');
+const COMPARE_DATA = [
+  { rank:'1', car:'Maybach S680',   engine:'M279 · V12 Biturbo', power:621, t100:'4.5s', price:'₦350M – ₦500M', accent:'#9A7820' },
+  { rank:'2', car:'Honda Accord V6',engine:'J35 · 3.5L V6',      power:271, t100:'6.2s', price:'₦6M – ₦10M',   accent:'#C8302C' },
+  { rank:'3', car:'Toyota Camry V6',engine:'2GR-FE · 3.5L V6',   power:268, t100:'6.3s', price:'₦6M – ₦9M',    accent:'#B05800' },
+  { rank:'4', car:'Toyota Corolla', engine:'M20A · 2.0L I4',      power:169, t100:'8.4s', price:'₦8M – ₦12M',  accent:'#1A5FBD' },
+  { rank:'5', car:'Honda Civic Si', engine:'K20Z3 · 2.0L I4',     power:197, t100:'7.1s', price:'₦7M – ₦10M',  accent:'#C8302C' },
+];
 
-const renderer = new THREE.WebGLRenderer({ canvas, antialias:true, alpha:false });
-renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 0.85;
-renderer.shadowMap.enabled = true;
-renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+// ── HERO CANVAS (particles) ──
+(function setupHeroBg() {
+  const canvas = document.getElementById('heroBg');
+  const ctx = canvas.getContext('2d');
+  let w, h, particles = [];
 
-const scene = new THREE.Scene();
-scene.background = new THREE.Color(0x08080C);
-scene.fog = new THREE.FogExp2(0x08080C, 0.04);
+  function resize() {
+    w = canvas.width = canvas.offsetWidth;
+    h = canvas.height = canvas.offsetHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
 
-const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
-camera.position.set(4.5, 1.8, 6);
-
-const controls = new OrbitControls(camera, canvas);
-controls.enableDamping = true;
-controls.dampingFactor = 0.06;
-controls.minDistance = 3;
-controls.maxDistance = 12;
-controls.maxPolarAngle = Math.PI / 2 + 0.1;
-controls.autoRotate = true;
-controls.autoRotateSpeed = 0.8;
-
-// ─── LIGHTING ───
-const ambientLight = new THREE.AmbientLight(0xffffff, 0.3);
-scene.add(ambientLight);
-
-// Key light (front)
-const keyLight = new THREE.DirectionalLight(0xffffff, 2.5);
-keyLight.position.set(5, 8, 5);
-keyLight.castShadow = true;
-keyLight.shadow.mapSize.set(2048,2048);
-keyLight.shadow.camera.near = 0.1;
-keyLight.shadow.camera.far = 30;
-keyLight.shadow.camera.left = -8;
-keyLight.shadow.camera.right = 8;
-keyLight.shadow.camera.top = 8;
-keyLight.shadow.camera.bottom = -8;
-scene.add(keyLight);
-
-// Rim light (back)
-const rimLight = new THREE.DirectionalLight(0x4488ff, 1.2);
-rimLight.position.set(-5, 4, -5);
-scene.add(rimLight);
-
-// Ground bounce
-const fillLight = new THREE.DirectionalLight(0xffffff, 0.5);
-fillLight.position.set(0, -3, 3);
-scene.add(fillLight);
-
-// Accent spotlight (colored, per car)
-const accentSpot = new THREE.SpotLight(0xe8192c, 3, 15, Math.PI/6, 0.5, 1);
-accentSpot.position.set(-3, 5, 0);
-scene.add(accentSpot);
-scene.add(accentSpot.target);
-accentSpot.target.position.set(0, 0, 0);
-
-// ─── FLOOR ───
-const floorGeo = new THREE.PlaneGeometry(30, 30);
-const floorMat = new THREE.MeshStandardMaterial({
-  color: 0x0a0a10,
-  roughness: 0.4,
-  metalness: 0.6,
-});
-const floor = new THREE.Mesh(floorGeo, floorMat);
-floor.rotation.x = -Math.PI / 2;
-floor.position.y = -0.001;
-floor.receiveShadow = true;
-scene.add(floor);
-
-// Floor reflection circle
-const circleGeo = new THREE.CircleGeometry(4, 64);
-const circleMat = new THREE.MeshStandardMaterial({
-  color: 0x0d0d18, roughness:0.1, metalness:0.9
-});
-const circle = new THREE.Mesh(circleGeo, circleMat);
-circle.rotation.x = -Math.PI/2;
-circle.position.y = 0.001;
-circle.receiveShadow = true;
-scene.add(circle);
-
-// Accent ring
-const ringGeo = new THREE.RingGeometry(3.9, 4.1, 64);
-const ringMat = new THREE.MeshBasicMaterial({ color:0xe8192c, side:THREE.DoubleSide });
-const ring = new THREE.Mesh(ringGeo, ringMat);
-ring.rotation.x = -Math.PI/2;
-ring.position.y = 0.002;
-scene.add(ring);
-
-// ─── GRID LINES ───
-const gridHelper = new THREE.GridHelper(30, 30, 0x111120, 0x111120);
-gridHelper.position.y = 0.003;
-scene.add(gridHelper);
-
-// ─── LOAD MODEL ───
-const loader = new GLTFLoader();
-let carGroup = null;
-
-function loadCarModel(car) {
-  return new Promise((resolve) => {
-    loader.load(car.glb, (gltf) => {
-      const model = gltf.scene;
-
-      // Auto-fit: center and scale
-      const box = new THREE.Box3().setFromObject(model);
-      const size = box.getSize(new THREE.Vector3());
-      const center = box.getCenter(new THREE.Vector3());
-      const maxDim = Math.max(size.x, size.y, size.z);
-      const scale = 3.5 / maxDim;
-
-      model.scale.setScalar(scale);
-      model.position.sub(center.multiplyScalar(scale));
-
-      // Lift to floor
-      const box2 = new THREE.Box3().setFromObject(model);
-      model.position.y -= box2.min.y;
-
-      // Apply car's body color to main mesh
-      model.traverse(child => {
-        if (child.isMesh) {
-          child.castShadow = true;
-          child.receiveShadow = true;
-          if (child.material) {
-            // Tint body panels
-            if (child.name && (child.name.toLowerCase().includes('body') ||
-                child.name.toLowerCase().includes('car') ||
-                child.name.toLowerCase().includes('chassis'))) {
-              child.material = child.material.clone();
-              child.material.color.setHex(car.bodyColor);
-            }
-          }
-        }
-      });
-
-      resolve(model);
-    }, undefined, (err) => {
-      // Fallback: procedural car shape
-      console.warn('GLB load failed, using fallback', err);
-      const g = buildFallbackCar(car);
-      resolve(g);
+  for (let i = 0; i < 60; i++) {
+    particles.push({
+      x: Math.random() * 1920, y: Math.random() * 1080,
+      r: Math.random() * 1.5 + 0.3,
+      vx: (Math.random() - 0.5) * 0.3,
+      vy: (Math.random() - 0.5) * 0.3,
+      a: Math.random() * 0.5 + 0.1,
     });
-  });
-}
+  }
 
-// ─── PROCEDURAL FALLBACK CAR ───
-function buildFallbackCar(car) {
-  const group = new THREE.Group();
-  const bodyMat = new THREE.MeshStandardMaterial({
-    color: car.bodyColor, roughness:0.15, metalness:0.9
-  });
-  const glassMat = new THREE.MeshStandardMaterial({
-    color:0x112233, roughness:0.05, metalness:0.1, transparent:true, opacity:0.7
-  });
-  const rimMat = new THREE.MeshStandardMaterial({
-    color: car.rimColor === 0 ? 0x1a1a1a : car.rimColor, roughness:0.2, metalness:0.95
-  });
-  const tireMat = new THREE.MeshStandardMaterial({ color:0x080808, roughness:0.9 });
-  const lightMat = new THREE.MeshStandardMaterial({
-    color:0xffeedd, emissive:0xffeedd, emissiveIntensity:0.8
-  });
-  const accentMat = new THREE.MeshStandardMaterial({
-    color: new THREE.Color(car.accent),
-    emissive: new THREE.Color(car.accent),
-    emissiveIntensity:0.3,
-    roughness:0.3, metalness:0.8
-  });
+  function draw() {
+    ctx.clearRect(0, 0, w, h);
+    particles.forEach(p => {
+      p.x += p.vx; p.y += p.vy;
+      if (p.x < 0) p.x = w; if (p.x > w) p.x = 0;
+      if (p.y < 0) p.y = h; if (p.y > h) p.y = 0;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(255,255,255,${p.a})`;
+      ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
 
-  // Main body lower — Maybach gets longer wheelbase
-  const bodyLength = car.suffix === 'S680' ? 5.2 : 4;
-  const bodyLow = new THREE.Mesh(new THREE.BoxGeometry(bodyLength, 0.55, 1.9), bodyMat);
-  bodyLow.position.set(0, 0.55, 0);
-  group.add(bodyLow);
+// ── COMPARE TABLE ──
+const tbody = document.getElementById('compareBody');
+COMPARE_DATA.forEach(d => {
+  const pct = Math.round((d.power / 650) * 100);
+  const tr = document.createElement('tr');
+  tr.innerHTML = `
+    <td class="td-rank" style="color:${d.accent}">${d.rank}</td>
+    <td class="td-car">${d.car}</td>
+    <td>${d.engine}</td>
+    <td>
+      <div class="compare-bar">
+        <div class="cbar-track">
+          <div class="cbar-fill" style="width:0%;background:${d.accent}" data-pct="${pct}"></div>
+        </div>
+        <span class="cbar-val" style="color:rgba(255,255,255,0.8)">${d.power} HP</span>
+      </div>
+    </td>
+    <td style="color:rgba(255,255,255,0.8)">${d.t100}</td>
+    <td style="color:${d.accent};font-weight:600">${d.price}</td>
+  `;
+  tbody.appendChild(tr);
+});
 
-  // Cabin — Maybach gets taller, roomier cabin
-  const cabinW = car.suffix === 'S680' ? 2.8 : 2.2;
-  const cabinH = car.suffix === 'S680' ? 0.78 : 0.65;
-  const cabinGeo = new THREE.BoxGeometry(cabinW, cabinH, 1.75);
-  const cabin = new THREE.Mesh(cabinGeo, bodyMat);
-  cabin.position.set(car.suffix === 'S680' ? -0.3 : -0.1, car.suffix === 'S680' ? 1.22 : 1.15, 0);
-  group.add(cabin);
+// ── NAV SCROLL ──
+const nav = document.getElementById('nav');
+const scrollFill = document.getElementById('scrollFill');
+window.addEventListener('scroll', () => {
+  const pct = window.scrollY / (document.body.scrollHeight - window.innerHeight) * 100;
+  scrollFill.style.width = pct + '%';
+  nav.classList.toggle('scrolled', window.scrollY > 80);
+});
 
-  // Windshield
-  const windGeo = new THREE.PlaneGeometry(1.1, 0.6);
-  const wind = new THREE.Mesh(windGeo, glassMat);
-  wind.position.set(1.0, 1.2, 0);
-  wind.rotation.y = Math.PI/2;
-  wind.rotation.z = -0.35;
-  group.add(wind);
-
-  // Rear glass
-  const rearGlass = new THREE.Mesh(new THREE.PlaneGeometry(1.0, 0.55), glassMat);
-  rearGlass.position.set(-1.1, 1.2, 0);
-  rearGlass.rotation.y = Math.PI/2;
-  rearGlass.rotation.z = 0.3;
-  group.add(rearGlass);
-
-  // Hood slope
-  const hoodGeo = new THREE.BoxGeometry(1.5, 0.15, 1.8);
-  const hood = new THREE.Mesh(hoodGeo, bodyMat);
-  hood.position.set(1.5, 0.9, 0);
-  hood.rotation.z = 0.12;
-  group.add(hood);
-
-  // Front lip / splitter
-  const splitter = new THREE.Mesh(new THREE.BoxGeometry(0.15, 0.08, 1.95), accentMat);
-  splitter.position.set(2.05, 0.3, 0);
-  group.add(splitter);
-
-  // Rear diffuser
-  const diffuser = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.12, 1.7), accentMat);
-  diffuser.position.set(-2.05, 0.38, 0);
-  group.add(diffuser);
-
-  // Side skirts
-  [-0.97, 0.97].forEach(z => {
-    const skirt = new THREE.Mesh(new THREE.BoxGeometry(3.5, 0.12, 0.08), accentMat);
-    skirt.position.set(0, 0.35, z);
-    group.add(skirt);
-  });
-
-  // Headlights
-  [0.6, -0.6].forEach(z => {
-    const hl = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.18, 0.4), lightMat);
-    hl.position.set(2.02, 0.72, z);
-    group.add(hl);
-  });
-
-  // Taillights
-  [0.6,-0.6].forEach(z => {
-    const tl = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.15, 0.5),
-      new THREE.MeshStandardMaterial({ color:0xff1122, emissive:0xff0000, emissiveIntensity:0.5 }));
-    tl.position.set(-2.02, 0.72, z);
-    group.add(tl);
-  });
-
-  // Wheels
-  const wheelPositions = [
-    [1.3, 0, 1.02], [1.3, 0, -1.02],
-    [-1.3, 0, 1.02], [-1.3, 0, -1.02]
-  ];
-  wheelPositions.forEach(([x,y,z]) => {
-    const tire = new THREE.Mesh(new THREE.CylinderGeometry(0.38, 0.38, 0.26, 32), tireMat);
-    tire.rotation.x = Math.PI/2;
-    tire.position.set(x, 0.38, z);
-    group.add(tire);
-
-    const rim = new THREE.Mesh(new THREE.CylinderGeometry(0.28, 0.28, 0.28, 16), rimMat);
-    rim.rotation.x = Math.PI/2;
-    rim.position.set(x, 0.38, z);
-    group.add(rim);
-
-    // Rim spokes
-    for (let i=0; i<5; i++) {
-      const ang = (i/5)*Math.PI*2;
-      const spoke = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.29, 0.18), rimMat);
-      spoke.rotation.x = Math.PI/2;
-      spoke.rotation.z = ang;
-      spoke.position.set(x + Math.cos(ang)*0.13, 0.38, z + Math.sin(ang)*0.13);
-      group.add(spoke);
+// ── INTERSECTION OBSERVER — sections ──
+const sectionObs = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('in-view');
+      // Trigger power bars
+      entry.target.querySelectorAll('.power-bar-fill').forEach(bar => {
+        setTimeout(() => { bar.style.width = bar.dataset.pct + '%'; }, 400);
+      });
     }
+  });
+}, { threshold: 0.25 });
 
-    // Brake caliper
-    const caliper = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.18, 0.28), accentMat);
-    caliper.position.set(x, 0.38, z > 0 ? z - 0.18 : z + 0.18);
-    group.add(caliper);
+document.querySelectorAll('.car-section').forEach(s => sectionObs.observe(s));
+
+// Compare table bars
+const compareObs = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.querySelectorAll('.cbar-fill').forEach((b, i) => {
+        setTimeout(() => { b.style.width = b.dataset.pct + '%'; }, i * 120);
+      });
+      compareObs.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.3 });
+compareObs.observe(document.getElementById('compare'));
+
+// ── THREE.JS PER PANEL ──
+const loader = new GLTFLoader();
+const scenes = {};
+
+function buildScene(car) {
+  const canvas = document.getElementById('canvas-' + car.id);
+  if (!canvas) return;
+
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.1;
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  renderer.setClearColor(0x000000, 0); // transparent bg — HTML bg shows
+
+  const scene = new THREE.Scene();
+
+  const w = canvas.parentElement.clientWidth;
+  const h = canvas.parentElement.clientHeight || 500;
+  renderer.setSize(w, h);
+
+  const camera = new THREE.PerspectiveCamera(42, w / h, 0.1, 100);
+  camera.position.set(5, 2.2, 6);
+
+  const controls = new OrbitControls(camera, canvas);
+  controls.enableDamping = true;
+  controls.dampingFactor = 0.055;
+  controls.minDistance = 3;
+  controls.maxDistance = 10;
+  controls.maxPolarAngle = Math.PI / 2 + 0.05;
+  controls.autoRotate = true;
+  controls.autoRotateSpeed = 1.2;
+  controls.enablePan = false;
+
+  // Stop auto-rotate on drag
+  canvas.addEventListener('pointerdown', () => { controls.autoRotate = false; });
+
+  // Lighting — bright, automotive showroom
+  const ambient = new THREE.AmbientLight(0xffffff, 1.8);
+  scene.add(ambient);
+
+  const keyLight = new THREE.DirectionalLight(0xffffff, 3.5);
+  keyLight.position.set(6, 10, 8);
+  keyLight.castShadow = true;
+  keyLight.shadow.mapSize.set(1024, 1024);
+  keyLight.shadow.camera.near = 0.5;
+  keyLight.shadow.camera.far = 30;
+  keyLight.shadow.camera.left = -6;
+  keyLight.shadow.camera.right = 6;
+  keyLight.shadow.camera.top = 6;
+  keyLight.shadow.camera.bottom = -6;
+  scene.add(keyLight);
+
+  const fillLight = new THREE.DirectionalLight(0xffffff, 1.5);
+  fillLight.position.set(-6, 4, -4);
+  scene.add(fillLight);
+
+  const rimLight = new THREE.DirectionalLight(0xffffff, 1.0);
+  rimLight.position.set(0, 2, -8);
+  scene.add(rimLight);
+
+  // Accent color light
+  const accentLight = new THREE.PointLight(new THREE.Color(car.accent), 1.5, 12);
+  accentLight.position.set(-3, 3, 2);
+  scene.add(accentLight);
+
+  // Ground shadow receiver
+  const floorGeo = new THREE.CircleGeometry(6, 64);
+  const floorMat = new THREE.ShadowMaterial({ opacity: 0.12 });
+  const floor = new THREE.Mesh(floorGeo, floorMat);
+  floor.rotation.x = -Math.PI / 2;
+  floor.receiveShadow = true;
+  scene.add(floor);
+
+  // Subtle platform ring
+  const ringGeo = new THREE.RingGeometry(3.4, 3.6, 64);
+  const ringMat = new THREE.MeshBasicMaterial({
+    color: new THREE.Color(car.accent),
+    transparent: true, opacity: 0.15,
+    side: THREE.DoubleSide,
+  });
+  const ring = new THREE.Mesh(ringGeo, ringMat);
+  ring.rotation.x = -Math.PI / 2;
+  ring.position.y = 0.01;
+  scene.add(ring);
+
+  // Load model
+  loader.load(car.glb, gltf => {
+    const model = gltf.scene;
+
+    // Auto-fit
+    const box = new THREE.Box3().setFromObject(model);
+    const size = box.getSize(new THREE.Vector3());
+    const center = box.getCenter(new THREE.Vector3());
+    const maxDim = Math.max(size.x, size.y, size.z);
+    const scale = 3.8 / maxDim;
+    model.scale.setScalar(scale);
+    model.position.sub(center.multiplyScalar(scale));
+
+    const box2 = new THREE.Box3().setFromObject(model);
+    model.position.y -= box2.min.y;
+
+    model.traverse(child => {
+      if (child.isMesh) {
+        child.castShadow = true;
+        child.receiveShadow = true;
+        if (child.material) {
+          child.material.envMapIntensity = 0.6;
+        }
+      }
+    });
+
+    scene.add(model);
+  }, undefined, err => {
+    console.error('GLB error', car.id, err);
   });
 
-  // Roof scoop / antenna detail
-  const antenna = new THREE.Mesh(new THREE.CylinderGeometry(0.015, 0.015, 0.35, 8), bodyMat);
-  antenna.position.set(-0.8, 1.58, 0.2);
-  group.add(antenna);
+  // Resize handler
+  const resizeObs = new ResizeObserver(() => {
+    const pw = canvas.parentElement.clientWidth;
+    const ph = canvas.parentElement.clientHeight || 500;
+    renderer.setSize(pw, ph);
+    camera.aspect = pw / ph;
+    camera.updateProjectionMatrix();
+  });
+  resizeObs.observe(canvas.parentElement);
 
-  group.traverse(c => { if(c.isMesh){ c.castShadow=true; c.receiveShadow=true; } });
-  return group;
-}
-
-// ─── STATE ───
-let currentIndex = 0;
-let isTransitioning = false;
-let dragUsed = false;
-
-// ─── BUILD SELECTOR ───
-const selectorEl = document.getElementById('car-selector');
-CARS.forEach((car, i) => {
-  const thumb = document.createElement('div');
-  thumb.className = 'car-thumb' + (i===0?' active':'');
-  thumb.style.setProperty('--t-accent', car.accent);
-  thumb.innerHTML = `
-    <div class="thumb-rank">NO. ${car.rank}</div>
-    <div class="thumb-name">${car.make}<br>${car.model} ${car.suffix}</div>
-    <div class="thumb-hp">${car.power} HP</div>
-  `;
-  thumb.addEventListener('click', () => switchCar(i));
-  selectorEl.appendChild(thumb);
-});
-
-// ─── RESIZE ───
-function resize() {
-  const w = wrap.clientWidth, h = wrap.clientHeight;
-  renderer.setSize(w, h);
-  camera.aspect = w/h;
-  camera.updateProjectionMatrix();
-}
-resize();
-new ResizeObserver(resize).observe(wrap);
-
-// ─── PARTICLES ───
-const pContainer = document.getElementById('particles');
-for (let i=0; i<25; i++) {
-  const p = document.createElement('div');
-  p.className = 'particle';
-  p.style.cssText = `
-    left:${Math.random()*100}%;
-    animation-duration:${4+Math.random()*8}s;
-    animation-delay:${-Math.random()*10}s;
-    opacity:${0.1+Math.random()*0.3};
-    width:${1+Math.random()*2}px;
-    height:${1+Math.random()*2}px;
-  `;
-  pContainer.appendChild(p);
-}
-
-// ─── SWITCH CAR ───
-async function switchCar(index) {
-  if (isTransitioning || index === currentIndex) return;
-  isTransitioning = true;
-
-  const overlay = document.getElementById('transition-overlay');
-  overlay.classList.add('flash');
-
-  await new Promise(r => setTimeout(r, 180));
-
-  // Remove old model
-  if (carGroup) {
-    scene.remove(carGroup);
-    carGroup = null;
+  // Animate
+  let t = 0;
+  function animate() {
+    requestAnimationFrame(animate);
+    t += 0.008;
+    accentLight.position.x = Math.sin(t) * 4;
+    accentLight.position.z = Math.cos(t) * 4;
+    controls.update();
+    renderer.render(scene, camera);
   }
-
-  currentIndex = index;
-  const car = CARS[index];
-
-  // Update accent color
-  const accentColor = new THREE.Color(car.accent);
-  accentSpot.color = accentColor;
-  ring.material.color = accentColor;
-  ring.material.needsUpdate = true;
-
-  // Update overlay
-  document.getElementById('oRank').textContent = car.rank;
-  document.getElementById('oMake').textContent = car.make;
-  document.getElementById('oModel').innerHTML = `${car.model} <span class="accent" id="oSuffix">${car.suffix}</span>`;
-  document.getElementById('oYears').textContent = car.years;
-  document.getElementById('sPower').textContent = `${car.power} HP`;
-  document.getElementById('sEngine').textContent = car.engine;
-  document.getElementById('sValue').textContent = `${car.value} / 10`;
-  document.getElementById('oPrice').textContent = car.price;
-  document.getElementById('oPrice').style.color = car.accent;
-  document.getElementById('oRank').style.color = car.accent;
-  document.querySelector('.accent') && (document.querySelector('.accent').style.color = car.accent);
-  document.querySelectorAll('.stat-fill').forEach(f => { f.style.background = car.accent; f.style.width='0'; });
-  document.getElementById('navCounter').textContent = `0${index+1} / 05`;
-
-  // Update thumbs
-  document.querySelectorAll('.car-thumb').forEach((t,i) => t.classList.toggle('active', i===index));
-
-  // Load new model
-  carGroup = await loadCarModel(car);
-  scene.add(carGroup);
-
-  overlay.classList.remove('flash');
-  await new Promise(r => setTimeout(r, 50));
-
-  // Animate stat bars
-  setTimeout(() => {
-    document.getElementById('fillPower').style.width = `${(car.power/car.powerMax)*100}%`;
-    document.getElementById('fillEngine').style.width = `${car.enginePct}%`;
-    document.getElementById('fillValue').style.width = `${(car.value/10)*100}%`;
-  }, 100);
-
-  isTransitioning = false;
-}
-
-// ─── KEYBOARD NAV ───
-document.addEventListener('keydown', e => {
-  if (e.key === 'ArrowRight') switchCar(Math.min(currentIndex+1, CARS.length-1));
-  if (e.key === 'ArrowLeft') switchCar(Math.max(currentIndex-1, 0));
-});
-
-// ─── DRAG HINT ───
-controls.addEventListener('start', () => {
-  if (!dragUsed) {
-    dragUsed = true;
-    document.getElementById('drag-hint').classList.add('hidden');
-  }
-});
-
-// ─── RENDER LOOP ───
-let t = 0;
-function animate() {
-  requestAnimationFrame(animate);
-  t += 0.01;
-
-  controls.update();
-
-  // Gentle accent light orbit
-  accentSpot.position.x = Math.sin(t * 0.3) * 5;
-  accentSpot.position.z = Math.cos(t * 0.3) * 3;
-
-  renderer.render(scene, camera);
-}
-
-// ─── INIT ───
-async function init() {
-  carGroup = await loadCarModel(CARS[0]);
-  scene.add(carGroup);
-
-  // Stat bars
-  setTimeout(() => {
-    document.getElementById('fillPower').style.width = `${(CARS[0].power/CARS[0].powerMax)*100}%`;
-    document.getElementById('fillEngine').style.width = `${CARS[0].enginePct}%`;
-    document.getElementById('fillValue').style.width = `${(CARS[0].value/10)*100}%`;
-  }, 600);
-
-  // Hide loader
-  document.getElementById('loader').classList.add('hidden');
-  document.getElementById('app').classList.add('visible');
-
   animate();
+
+  scenes[car.id] = { renderer, scene, camera, controls };
+}
+
+// ── LOADER + INIT ──
+async function init() {
+  const bar = document.getElementById('loaderBar');
+  const txt = document.getElementById('loaderText');
+  const msgs = ['Loading 3D models', 'Setting up lighting', 'Polishing paint', 'Almost ready'];
+  let pct = 0;
+
+  const timer = setInterval(() => {
+    pct = Math.min(pct + Math.random() * 4, 92);
+    bar.style.width = pct + '%';
+    txt.textContent = msgs[Math.floor(pct / 25)];
+  }, 80);
+
+  // Build all 5 scenes
+  CARS.forEach(car => buildScene(car));
+
+  // Small delay for models to start loading
+  await new Promise(r => setTimeout(r, 1800));
+  clearInterval(timer);
+  bar.style.width = '100%';
+  txt.textContent = 'Ready';
+
+  setTimeout(() => {
+    document.getElementById('loader').classList.add('out');
+  }, 400);
 }
 
 init();
